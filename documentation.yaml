@@ -5,7 +5,7 @@ info:
   description: 'api documentation for the EVP project'
   
 servers:
-  - description: 'Local'
+  - description: 'Dev'
     url: 'http://localhost:8000/api'
   - description: 'Production'
     url: 'https://evp-backend.fly.dev/api'
@@ -22,6 +22,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProjectStatuses'
+                
   /project-home-types:
     get:
       summary: "Returns an array of possible project types for home projects"
@@ -34,6 +35,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProjectHomeTypes'
+                
   /project-foreign-types:
     get:
       summary: "Returns an array of possible project types for foreign projects"
@@ -136,7 +138,6 @@ paths:
                 
 components:
   schemas:
-    
     ProjectStatuses:
       type: array
       items:
