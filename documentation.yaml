@@ -10,6 +10,194 @@ servers:
   - description: 'Production'
     url: 'https://evp-backend.fly.dev/api'
 paths:
+  /user/{id}/projects:
+    get:
+      summary: "Returns projects of a user specified by ID"
+      parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+              example: 1
+            required: true
+            description: ID of the user
+      tags:
+        - projects of user
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          first_name:
+                            type: string
+                            example: John
+                          last_name:
+                            type: string
+                            example: Doe
+                          email:
+                            type: string
+                            example: john@doe.com
+                          phone_number:
+                            anyOf:
+                              - type: string
+                                example: 0901 234 567
+                              - type: null
+                          my_projects:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  example: 3
+                                type:
+                                  type: string
+                                  example: domestic
+                                subtype:
+                                  type: string
+                                  example: APPV
+                                name_sk:
+                                  type: string
+                                  example: slovenský názov 3
+                                name_en:
+                                  type: string
+                                  example: english title 3
+                                start_date:
+                                  type: string
+                                  example: 2020-12-12
+                                  format: date
+                                end_date:
+                                  type: string
+                                  example: 2022-12-12
+                                  format: date
+                                is_draft:
+                                  type: boolean
+                                  example: false
+                                status:
+                                  type: string
+                                  example: V realizácii
+                                user_roles:
+                                  type: array
+                                  items:
+                                    type: string
+                                    example: project_user
+                                user_roles_sk:
+                                  type: array
+                                  items:
+                                    type: string
+                                    example: Riešiteľ
+                                active_member:
+                                  type: boolean
+                                  example: true
+                          invitations:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  example: 2
+                                type:
+                                  type: string
+                                  example: foreign
+                                subtype:
+                                  type: string
+                                  example: APPV
+                                name_sk:
+                                  type: string
+                                  example: slovenský názov 2
+                                name_en:
+                                  type: string
+                                  example: english title 2
+                                start_date:
+                                  type: string
+                                  example: 2020-12-12
+                                  format: date
+                                end_date:
+                                  type: string
+                                  example: 2022-12-12
+                                  format: date
+                                is_draft:
+                                  type: boolean
+                                  example: false
+                                status:
+                                  type: string
+                                  example: Podaný
+                                user_roles:
+                                  type: array
+                                  items:
+                                    type: string
+                                    example: project_user
+                                user_roles_sk:
+                                  type: array
+                                  items:
+                                    type: string
+                                    example: Riešiteľ
+                                active_member:
+                                  type: boolean
+                                  example: false
+                          drafts:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  example: 1
+                                type:
+                                  type: string
+                                  example: domestic
+                                subtype:
+                                  type: string
+                                  example: KEGA
+                                name_sk:
+                                  type: string
+                                  example: slovenský názov 1
+                                name_en:
+                                  type: string
+                                  example: english title 1
+                                start_date:
+                                  type: string
+                                  example: 2020-12-12
+                                  format: date
+                                end_date:
+                                  type: string
+                                  example: 2022-12-12
+                                  format: date
+                                is_draft:
+                                  type: boolean
+                                  example: true
+                                status:
+                                  type: string
+                                  example: Pred schválením
+                                user_roles:
+                                  type: array
+                                  items:
+                                    type: string
+                                    example: project_admin
+                                user_roles_sk:
+                                  type: array
+                                  items:
+                                    type: string
+                                    example: Hlavný riešiteľ
+                                active_member:
+                                  type: boolean
+                                  example: false
+        '404':
+          description: Not found
+
   /project-statuses:
     get:
       summary: "Returns an array of possible project statuses"
