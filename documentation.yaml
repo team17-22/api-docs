@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: '1.0.0'
+  version: '1.3.0'
   title: 'EVP-api'
   description: 'api documentation for the EVP project'
   
@@ -207,12 +207,51 @@ paths:
                   $ref: '#/components/schemas/ProjectMilestones'
           '404':
             description: Not Found
-      
+  /project-search:
+    get:
+      summary: "Returns projects"
+      tags:
+        - project
+      parameters:
+         - in: query
+           name: page
+           schema:
+             type: integer
+             example: 1
+           description: Specify which page to return 
+         - in: query
+           name: limit
+           schema:
+             type: integer
+             example: 10
+           description: The numbers of items returned on each page
+         - in: query
+           name: title
+           schema:
+             type: string
+             example: 'Nazov'
+           description: Title
+         - in: query
+           name: keyword
+           schema:
+             type: string
+             example: 'keyword1'
+           description: Keyword
+      responses:
+        '200':
+          description: OK
+          content:
+              application/json:        
+                schema:
+                  $ref: '#/components/schemas/ProjectSearch'
+        '422':
+          description: Unprocessable Content
+       
   /person/{id}/projects-simple:
     get:
       summary: "Returns projects - simplified endpoint for team 25"
       tags:
-        - team25_endpoints
+        - "team25 endpoints"
       parameters:
           - in: path
             name: id
@@ -238,10 +277,10 @@ paths:
               application/json:        
                 schema:
                   $ref: '#/components/schemas/SimplifiedProjects'
-        '400':
+        '404':
           description: Not Found
        
-  /user/{id}/projects:
+  /person/{id}/projects:
     get:
       summary: "Returns projects of a user specified by ID"
       parameters:
@@ -253,7 +292,7 @@ paths:
             required: true
             description: ID of the user
       tags:
-        - user
+        - person
       responses:
         '200':
           description: OK
@@ -666,20 +705,20 @@ components:
               keyword:
                 type: string
                 example: "Keyword 1"
-              expected_results:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      type:
-                        type: string
-                        example: 'Patent'
-                      total:
-                        type: integer
-                        example: 3
-                      concluded:
-                        type: integer
-                        example: 0
+        expected_results:
+            type: array
+            items:
+              type: object
+              properties:
+                type:
+                  type: string
+                  example: 'Patent'
+                total:
+                  type: integer
+                  example: 3
+                concluded:
+                  type: integer
+                  example: 0
         participants:
           type: array
           items:
@@ -704,3 +743,50 @@ components:
                   phone_number:
                     type: string
                     example: "031236271"
+                    
+    ProjectSearch:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              title_sk:
+                type: string
+                example: "slovensky nazov"
+              title_en:
+                type: string
+                example: "english title"
+              type:
+                type: string
+                example: "KEGA"
+              start_date:
+                type: string
+                format: date
+                example: "2020-06-12"
+              end_date:
+                type: string
+                format: date
+                example:  "2023-06-15"
+              status:
+                type: string
+                example: "Pred schválením"
+        info:
+          type: object
+          properties:
+            number_of_results:
+              type: integer
+              example: 1
+            number_of_displayed:
+              type: integer
+              example: 1
+            current_page:
+              type: integer
+              example: 1
+            total_pages:
+              type: integer
+              example: 1
