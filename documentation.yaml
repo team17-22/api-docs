@@ -245,7 +245,7 @@ paths:
                 schema:
                   $ref: '#/components/schemas/ProjectSearch'
         '422':
-          description: Unprocessable Content
+          description: Unprocessable Entity
        
   /person/{id}/projects-simple:
     get:
@@ -281,16 +281,28 @@ paths:
           description: Not Found
        
   /person/{id}/projects:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          example: 1
+        required: true
+        description: The ID of the person
+      - in: query
+        name: page
+        schema:
+          type: integer
+          example: 1
+        description: Specify which page to return 
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          example: 10
+        description: The numbers of items returned on each page
     get:
-      summary: "Returns projects of a user specified by ID"
-      parameters:
-          - in: path
-            name: id
-            schema:
-              type: integer
-              example: 1
-            required: true
-            description: ID of the user
+      summary: "Returns projects of a person specified by ID"
       tags:
         - person
       responses:
@@ -302,171 +314,685 @@ paths:
                 type: object
                 properties:
                   data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        type:
+                          type: string
+                        subtype:
+                          type: string
+                        start_date:
+                          type: string
+                          format: date
+                        end_date:
+                          type: string
+                          format: date
+                        status:
+                          type: string
+                        name_sk:
+                          type: string
+                        name_en:
+                          type: string
+                        is_draft:
+                          type: boolean
+                        person_roles:
+                          type: string
+                        person_roles_sk:
+                          type: string
+                  info:
                     type: object
                     properties:
-                      user:
-                        type: object
-                        properties:
-                          id:
-                            type: integer
-                            example: 1
-                          first_name:
-                            type: string
-                            example: John
-                          last_name:
-                            type: string
-                            example: Doe
-                          email:
-                            type: string
-                            example: john@doe.com
-                          phone_number:
-                            anyOf:
-                              - type: string
-                                example: 0901 234 567
-                          my_projects:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                id:
-                                  type: integer
-                                  example: 3
-                                type:
-                                  type: string
-                                  example: domestic
-                                subtype:
-                                  type: string
-                                  example: APPV
-                                name_sk:
-                                  type: string
-                                  example: slovenský názov 3
-                                name_en:
-                                  type: string
-                                  example: english title 3
-                                start_date:
-                                  type: string
-                                  example: 2020-12-12
-                                  format: date
-                                end_date:
-                                  type: string
-                                  example: 2022-12-12
-                                  format: date
-                                is_draft:
-                                  type: boolean
-                                  example: false
-                                status:
-                                  type: string
-                                  example: V realizácii
-                                user_roles:
-                                  type: array
-                                  items:
-                                    type: string
-                                    example: project_user
-                                user_roles_sk:
-                                  type: array
-                                  items:
-                                    type: string
-                                    example: Riešiteľ
-                                active_member:
-                                  type: boolean
-                                  example: true
-                          invitations:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                id:
-                                  type: integer
-                                  example: 2
-                                type:
-                                  type: string
-                                  example: foreign
-                                subtype:
-                                  type: string
-                                  example: APPV
-                                name_sk:
-                                  type: string
-                                  example: slovenský názov 2
-                                name_en:
-                                  type: string
-                                  example: english title 2
-                                start_date:
-                                  type: string
-                                  example: 2020-12-12
-                                  format: date
-                                end_date:
-                                  type: string
-                                  example: 2022-12-12
-                                  format: date
-                                is_draft:
-                                  type: boolean
-                                  example: false
-                                status:
-                                  type: string
-                                  example: Podaný
-                                user_roles:
-                                  type: array
-                                  items:
-                                    type: string
-                                    example: project_user
-                                user_roles_sk:
-                                  type: array
-                                  items:
-                                    type: string
-                                    example: Riešiteľ
-                                active_member:
-                                  type: boolean
-                                  example: false
-                          drafts:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                id:
-                                  type: integer
-                                  example: 1
-                                type:
-                                  type: string
-                                  example: domestic
-                                subtype:
-                                  type: string
-                                  example: KEGA
-                                name_sk:
-                                  type: string
-                                  example: slovenský názov 1
-                                name_en:
-                                  type: string
-                                  example: english title 1
-                                start_date:
-                                  type: string
-                                  example: 2020-12-12
-                                  format: date
-                                end_date:
-                                  type: string
-                                  example: 2022-12-12
-                                  format: date
-                                is_draft:
-                                  type: boolean
-                                  example: true
-                                status:
-                                  type: string
-                                  example: Pred schválením
-                                user_roles:
-                                  type: array
-                                  items:
-                                    type: string
-                                    example: project_admin
-                                user_roles_sk:
-                                  type: array
-                                  items:
-                                    type: string
-                                    example: Hlavný riešiteľ
-                                active_member:
-                                  type: boolean
-                                  example: false
+                      number_of_results:
+                        type: integer
+                      number_of_displayed:
+                        type: integer
+                      current_page:
+                        type: integer
+                      total_pages:
+                        type: integer
+              example:
+                data:
+                  - id: 1
+                    type: "domestic"
+                    subtype: "KEGA"
+                    start_date: "2020-06-12"
+                    end_date: "2023-06-15"
+                    status: "Pred schválením"
+                    name_sk: "slovensky nazov"
+                    name_en: "english title"
+                    is_draft: false
+                    person_roles: "Administrator"
+                    person_roles_sk: "Hlavný riešiteľ"
+                  - id: 2
+                    type: "domestic"
+                    subtype: "KEGA"
+                    start_date: "2020-07-13"
+                    end_date: "2023-03-17"
+                    status: "Pred schválením"
+                    name_sk: "slovensky nazov 2"
+                    name_en: "english title 2"
+                    is_draft: false
+                    person_roles: "Administrator"
+                    person_roles_sk: "Hlavný riešiteľ"
+                info:
+                  number_of_results: 2
+                  number_of_displayed: 2
+                  current_page: 1
+                  total_pages: 1
         '404':
           description: Not found
-            
+  
+  /person/{id}/invitations:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          example: 1
+        required: true
+        description: The ID of the person
+      - in: query
+        name: page
+        schema:
+          type: integer
+          example: 1
+        description: Specify which page to return 
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          example: 10
+        description: The numbers of items returned on each page
+    get:
+      summary: "Returns invitations for a person specified by ID"
+      tags:
+        - person
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        project_id:
+                          type: integer
+                        name_sk:
+                          type: string
+                        subtype:
+                          type: string
+                        sender_id:
+                          type: integer
+                        role:
+                          type: string
+                  info:
+                    type: object
+                    properties:
+                      number_of_results:
+                        type: integer
+                      number_of_displayed:
+                        type: integer
+                      current_page:
+                        type: integer
+                      total_pages:
+                        type: integer
+              example:
+                data:
+                  - id: 1
+                    project_id: 4
+                    name_sk: "dalsi projekt"
+                    subtype: "Grantový systém"
+                    sender_id: 2
+                    role: "Výskumník"
+                info:
+                  number_of_results: 1
+                  number_of_displayed: 1
+                  current_page: 1
+                  total_pages: 1
+        '404':
+          description: Not Found
+
+  /person/{id}/drafts:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          example: 1
+        required: true
+        description: The ID of the person
+      - in: query
+        name: page
+        schema:
+          type: integer
+          example: 1
+        description: Specify which page to return 
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          example: 10
+        description: The numbers of items returned on each page
+    get:
+      summary: "Returns drafts of a person specified by ID"
+      tags:
+        - person
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        type:
+                          type: string
+                        subtype:
+                          type: string
+                        start_date:
+                          type: string
+                          format: date
+                        end_date:
+                          type: string
+                          format: date
+                        status:
+                          type: string
+                        name_sk:
+                          type: string
+                        name_en:
+                          type: string
+                        is_draft:
+                          type: boolean
+                        person_roles:
+                          type: string
+                        person_roles_sk:
+                          type: string
+                  info:
+                    type: object
+                    properties:
+                      number_of_results:
+                        type: integer
+                      number_of_displayed:
+                        type: integer
+                      current_page:
+                        type: integer
+                      total_pages:
+                        type: integer
+              example:
+                data:
+                  - id: 3
+                    type: "domestic"
+                    subtype: "APPV"
+                    start_date: "2020-06-12"
+                    end_date: "2023-06-15"
+                    status: "Pred schválením"
+                    name_sk: "draft projekt"
+                    name_en: ""
+                    is_draft: true
+                    person_roles: "Administrator"
+                    person_roles_sk: "Hlavný riešiteľ"
+                info:
+                  number_of_results: 1
+                  number_of_displayed: 1
+                  current_page: 1
+                  total_pages: 1
+        '404':
+          description: Not Found
+
+  /project-person-relations:
+    post:
+      summary: "Creates a connection between existing project and person"
+      tags:
+        - project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cfProjId:
+                  type: integer
+                cfPersId:
+                  type: integer
+                cfClassId:
+                  type: string
+              required:
+                - cfProjId
+                - cfPersId
+                - cfClassId
+            example:
+              cfProjId: 2
+              cfPersId: 1
+              cfClassId: "94fefd50-1d00-11e1-8bc2-0800200c9a66_b9bd41f0-1cfc-11e1-8bc2-0800200c9a66"
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+              example:
+                id: 1
+        '404':
+          description: Not Found
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              example:
+                error: Duplicate assignment of person to project
+
+  /project-invitations:
+    post:
+      summary: "Creates new invitation to a project"
+      tags:
+        - project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project_id:
+                  type: integer
+                recipient_id:
+                  type: integer
+                sender_id:
+                  type: integer
+                role_id:
+                  type: string
+              required:
+                - project_id
+                - recipient_id
+                - sender_id
+                - role_id
+            example:
+              project_id: 1
+              recipient_id: 2
+              sender_id: 1
+              role_id: "94fefd50-1d00-11e1-8bc2-0800200c9a66_b9bd41f0-1cfc-11e1-8bc2-0800200c9a66"
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+              example:
+                id: 1
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '422':
+          description: Unprocessable Entity
+  
+  /organisation:
+    get:
+      summary: "Returns a list of organisations"
+      tags:
+        - organisation
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        acronym:
+                          type: string
+                        ico:
+                          type: string
+                        email:
+                          type: string
+                        phone_number:
+                          type: string
+                        website:
+                          type: string
+                        type_en:
+                          type: string
+                        type_sk:
+                          type: string
+              example:
+                data:
+                  - id: 1
+                    name: "name"
+                    acronym: "acronym"
+                    ico: "ico"
+                    email: "email"
+                    phone_number: "phone_number"
+                    website: "website"
+                    type_en: "Academic Institute"
+                    type_sk: "Akademický inštitút"
+    post:
+      summary: "Creates an organisation"
+      tags:
+        - organisation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                acronym:
+                  type: string
+                research_activity:
+                  type: string
+                ico:
+                  type: string
+                email:
+                  type: string
+                phone_number:
+                  type: string
+                website:
+                  type: string
+                cfClassId:
+                  type: string
+              required:
+                - name
+                - cfClassId
+      responses:
+        '201':
+          description: Created
+        '422':
+          description: Unprocessable Entity
+        '405':
+          description: Method Not Allowed
+
+  /organisation/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          example: 1
+        required: true
+        description: The ID of the organisation to be returned
+
+    get:
+      summary: "Returns an organisation specified by ID"
+      tags:
+        - organisation
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  acronym:
+                    type: string
+                  ico:
+                    type: string
+                  email:
+                    type: string
+                  phone_number:
+                    type: string
+                  website:
+                    type: string
+                  type_en:
+                    type: string
+                  type_sk:
+                    type: string
+              example:
+                id: 1
+                name: "name"
+                acronym: "acronym"
+                ico: "ico"
+                email: "email2"
+                phone_number: "phone_number"
+                website: "website"
+                type_en: "Academic Institute"
+                type_sk: "Akademický inštitút"
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              example:
+                error: "Organization with given ID does not exist."
+
+  /organisation/{id}/review-process/{type}:        
+    get:
+      summary: "Returns a review process structure for specified type in an organisation specified by ID"
+      tags:
+        - organisation
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          example: 1
+        required: true
+        description: The ID of the organization
+      - in: path
+        name: type
+        schema:
+          type: string
+          example: "project"
+        required: true
+        description: The type of review process
+        enum:
+          - project
+          - patent
+          - publication
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tree:
+                    type: object
+                    properties:
+                      process_id:
+                        type: integer
+                      process_name:
+                        type: string
+                      responsible_person:
+                        type: integer
+                        nullable: true
+                      prev_reviewers:
+                        type: array
+                        items:
+                          type: integer
+                      child_processes:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            process_id:
+                              type: integer
+                            process_name:
+                              type: string
+                            responsible_person:
+                              type: integer
+                              nullable: true
+                            prev_reviewers:
+                              type: array
+                              items:
+                                type: integer
+                            child_processes:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  process_id:
+                                    type: integer
+                                  process_name:
+                                    type: string
+                                  responsible_person:
+                                    type: integer
+                                    nullable: true
+                                  prev_reviewers:
+                                    type: array
+                                    items:
+                                      type: integer
+                                  child_processes:
+                                    type: array
+                                    items: []
+              example:
+                tree:
+                  process_id: 1
+                  process_name: "Review process 1"
+                  responsible_person: null
+                  prev_reviewers:
+                    - 4
+                    - 5
+                  child_processes:
+                    - process_id: 2
+                      process_name: "Review process 2"
+                      responsible_person: 9
+                      prev_reviewers:
+                        - 1
+                        - 2
+                        - 3
+                        - 6
+                        - 7
+                        - 8
+                      child_processes:
+                        - process_id: 3
+                          process_name: "Review process 3"
+                          responsible_person: 4
+                          prev_reviewers: []
+                          child_processes: []
+                        - process_id: 4
+                          process_name: "Review process 4"
+                          responsible_person: 5
+                          prev_reviewers: []
+                          child_processes: []
+        '404':
+          description: Not Found
+
+  /classes/{context}:
+    get:
+      summary: "Returns classes for specified context"
+      parameters:
+        - in: path
+          name: context
+          schema:
+            type: string
+            example: proj-pers
+          required: true
+          description: The context of classes to be returned
+          enum:
+            - proj-pers
+            - org-class
+      tags:
+        - class
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        cfTerm:
+                          type: string
+                        cfTerm_sk:
+                          type: string
+              examples:
+                proj-pers:
+                  value:
+                    data:
+                      - id: "94fefd50-1d00-11e1-8bc2-0800200c9a66_b9bd41f0-1cfc-11e1-8bc2-0800200c9a66"
+                        cfTerm: "Administrator"
+                        cfTerm_sk: "Hlavný riešiteľ"
+                      - id: "94fefd50-1d00-11e1-8bc2-0800200c9a66_ebd55ab0-1cfc-11e1-8bc2-0800200c9a66"
+                        cfTerm: "Researcher"
+                        cfTerm_sk: "Výskumník"
+                      - id: "94fefd50-1d00-11e1-8bc2-0800200c9a66_ddc3dd10-1cfd-11e1-8bc2-0800200c9a66"
+                        cfTerm: "Participant"
+                        cfTerm_sk: "Riešiteľ"
+                org-class:
+                  value:
+                    data:
+                      - id: "759af939-34ae-11e1-b86c-0800200c9a66_eda2b2ec-34c5-11e1-b86c-0800200c9a66"
+                        cfTerm: "Academic Institute"
+                        cfTerm_sk: "Akademický inštitút"
+                      - id: "759af939-34ae-11e1-b86c-0800200c9a66_eda2b2ed-34c5-11e1-b86c-0800200c9a66"
+                        cfTerm: "University"
+                        cfTerm_sk: "Univerzita"
+                      - id: "759af939-34ae-11e1-b86c-0800200c9a66_eda2b2ee-34c5-11e1-b86c-0800200c9a66"
+                        cfTerm: "University College"
+                        cfTerm_sk: "Univerzitná vysoká škola"
+                      - id: "759af939-34ae-11e1-b86c-0800200c9a66_eda2b2ef-34c5-11e1-b86c-0800200c9a66"
+                        cfTerm: "Research Institute"
+                        cfTerm_sk: "Výskumný ústav"
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              example:
+                error: "Specified context was not found. Available contexts are: ['proj-pers', 'org-class']"
+
 components:
   schemas:
     ProjectStatuses:
